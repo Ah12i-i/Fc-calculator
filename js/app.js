@@ -1,0 +1,215 @@
+/* Purpose: DOM wiring, rendering, and interaction logic for the calculator. */
+
+(function (global) {
+  /* --- DOM references --- */
+  const fc = global.FC;
+  const elements = {
+    buyPrice: document.getElementById("buy-price"),
+    sellPrice: document.getElementById("sell-price"),
+    playersCount: document.getElementById("players-count"),
+    chips: Array.from(document.querySelectorAll(".chip")),
+    stepButtons: Array.from(document.querySelectorAll(".player-stepper")),
+    resetButton: document.getElementById("reset-btn"),
+    profitCard: document.getElementById("profit-card"),
+    lossCard: document.getElementById("loss-card"),
+    profitTotal: document.getElementById("profit-total"),
+    lossTotal: document.getElementById("loss-total"),
+    profitPerPlayer: document.getElementById("profit-per-player"),
+    lossPerPlayer: document.getElementById("loss-per-player"),
+    profitPercent: document.getElementById("profit-percent"),
+    lossPercent: document.getElementById("loss-percent"),
+    breakEvenProfit: document.getElementById("break-even-profit"),
+    breakEvenLoss: document.getElementById("break-even-loss")
+  };
+
+  let renderFrameId = null;
+
+  function animateNumber(element, endValue, decimals) {
+    if (element._rafId) {
+      cancelAnimationFrame(element._rafId);
+    }
+
+    const startValue = Number(element.dataset.value || 0);
+    const from = Number.isFinite(startValue) ? startValue : 0;
+    const to = Number.isFinite(endValue) ? endValue : 0;
+    const duration = 400;
+    const startTime = performance.now();
+
+    function tick(now) {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = from + (to - from) * eased;
+      const nextText = Number(current.toFixed(decimals)).toLocaleString("en-US");
+      element.textContent = nextText;
+
+      if (progress < 1) {
+        element._rafId = requestAnimationFrame(tick);
+      } else {
+        element.textContent = Number(to.toFixed(decimals)).toLocaleString("en-US");
+        element.dataset.value = String(to);
+        element._rafId = null;
+      }
+    }
+
+    element._rafId = requestAnimationFrame(tick);
+  }
+
+  function syncChipState(selectedPlayers) {
+    elements.chips.forEach(function (chip) {
+      const matches = Number(chip.dataset.players) === Number(selectedPlayers);
+      chip.classList.toggle("is-active", matches);
+    });
+  }
+
+  function setPlayersValue(value) {
+    const safeValue = Math.max(1, Number(fc.digitsOnly(value)) || 1);
+    elements.playersCount.value = fc.formatNumber(String(safeValue));
+    syncChipState(safeValue);
+    render();
+  }
+
+  function setNeutralState() {
+    animateNumber(elements.profitTotal, 0, 0);
+    animateNumber(elements.lossTotal, 0, 0);
+    animateNumber(elements.profitPerPlayer, 0, 0);
+    animateNumber(elements.lossPerPlayer, 0, 0);
+    elements.profitPercent.textContent = "+0.00%";
+    elements.lossPercent.textContent = "+0.00%";
+    animateNumber(elements.breakEvenProfit, 0, 0);
+    animateNumber(elements.breakEvenLoss, 0, 0);
+
+    elements.profitCard.classList.add("neutral-card");
+    elements.lossCard.classList.add("neutral-card");
+    elements.profitCard.classList.remove("is-active");
+    elements.lossCard.classList.remove("is-active");
+  }
+
+  function applyNumericInputFormatting(input) {
+    const digits = fc.digitsOnly(input.value);
+    input.value = digits ? fc.formatNumber(digits) : "";
+
+    if (input === elements.playersCount) {
+      const count = Number(fc.digitsOnly(input.value)) || 0;
+      syncChipState(count > 0 ? count : 1);
+    }
+  }
+
+  function updateCardState(direction) {
+    elements.profitCard.classList.remove("is-active");
+    elements.lossCard.classList.remove("is-active");
+    elements.profitCard.classList.add("neutral-card");
+    elements.lossCard.classList.add("neutral-card");
+
+    if (direction === "profit") {
+      elements.profitCard.classList.remove("neutral-card");
+      elements.profitCard.classList.add("is-active");
+    }
+
+    if (direction === "loss") {
+      elements.lossCard.classList.remove("neutral-card");
+      elements.lossCard.classList.add("is-active");
+    }
+  }
+
+  function render() {
+    const buyPrice = fc.parseNumericInput(elements.buyPrice.value);
+    const sellPrice = fc.parseNumericInput(elements.sellPrice.value);
+    const playersCount = Math.max(1, fc.parseNumericInput(elements.playersCount.value) || 1);
+
+    const hasAnyValue = buyPrice > 0 || sellPrice > 0;
+    if (!hasAnyValue) {
+      setNeutralState();
+      return;
+    }
+
+    const stats = fc.calculateStats({
+      buyPrice: elements.buyPrice.value,
+      sellPrice: elements.sellPrice.value,
+      playersCount: playersCount
+    });
+
+    const positive = stats.profitPerPlayer > 0;
+    const negative = stats.profitPerPlayer < 0;
+
+    animateNumber(elements.profitTotal, Math.max(stats.totalProfit, 0), 0);
+    animateNumber(elements.lossTotal, Math.max(stats.totalLoss, 0), 0);
+    animateNumber(elements.profitPerPlayer, Math.max(stats.profitPerPlayer, 0), 0);
+    animateNumber(elements.lossPerPlayer, Math.max(stats.lossPerPlayer, 0), 0);
+    animateNumber(elements.breakEvenProfit, Math.max(stats.breakEven, 0), 0);
+    animateNumber(elements.breakEvenLoss, Math.max(stats.breakEven, 0), 0);
+
+    elements.profitPercent.textContent = fc.formatSignedPercent(Math.max(stats.percentage, 0));
+    elements.lossPercent.textContent = fc.formatSignedPercent(Math.min(stats.percentage, 0));
+
+    if (positive) {
+      updateCardState("profit");
+    } else if (negative) {
+      updateCardState("loss");
+    } else {
+      elements.profitCard.classList.add("neutral-card");
+      elements.lossCard.classList.add("neutral-card");
+      elements.profitCard.classList.remove("is-active");
+      elements.lossCard.classList.remove("is-active");
+    }
+  }
+
+  function scheduleRender() {
+    if (renderFrameId) {
+      cancelAnimationFrame(renderFrameId);
+    }
+
+    renderFrameId = requestAnimationFrame(function () {
+      render();
+      renderFrameId = null;
+    });
+  }
+
+  function resetForm() {
+    elements.buyPrice.value = "";
+    elements.sellPrice.value = "";
+    elements.playersCount.value = String(fc.DEFAULTS.playersCount);
+    syncChipState(fc.DEFAULTS.playersCount);
+    render();
+  }
+
+  elements.buyPrice.addEventListener("input", function () {
+    applyNumericInputFormatting(this);
+    scheduleRender();
+  });
+
+  elements.sellPrice.addEventListener("input", function () {
+    applyNumericInputFormatting(this);
+    scheduleRender();
+  });
+
+  elements.playersCount.addEventListener("input", function () {
+    applyNumericInputFormatting(this);
+    scheduleRender();
+  });
+
+  elements.playersCount.addEventListener("keydown", function (event) {
+    if (["e", "E", "+", "-", "."].includes(event.key)) {
+      event.preventDefault();
+    }
+  });
+
+  elements.stepButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      const currentValue = Number(fc.digitsOnly(elements.playersCount.value)) || 1;
+      const step = Number(button.dataset.step) || 0;
+      setPlayersValue(currentValue + step);
+    });
+  });
+
+  elements.chips.forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      setPlayersValue(chip.dataset.players);
+    });
+  });
+
+  elements.resetButton.addEventListener("click", resetForm);
+
+  elements.playersCount.value = String(fc.DEFAULTS.playersCount);
+  syncChipState(fc.DEFAULTS.playersCount);
+  render();
+})(window);

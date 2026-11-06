@@ -1,0 +1,212 @@
+
+/* Purpose: global variables, reset, background, typography, and page layout. */
+
+
+/* =========================================
+   1. DESIGN TOKENS
+========================================= */
+
+:root {
+  --navy-deep: #0a1030;
+  --royal-blue: #1a2a9c;
+  --ocean-blue: #0c5aa8;
+  --teal: #0a8a8f;
+  --neon-mint: #14f0b0;
+  --aqua-glow: #9ef5e6;
+  --loss-red: #ff4d6a;
+
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(158, 245, 230, 0.2);
+
+  --text-main: #eafffa;
+  --text-muted: #8fb8c4;
+
+  --shadow-soft: 0 10px 22px rgba(8, 13, 29, 0.2);
+
+  --bg-dim: 0.35;
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+}
+
+/* =========================================
+   2. GLOBAL RESET
+========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  min-height: 100%;
+  background-color: #0a1030;
+}
+
+/* =========================================
+   3. FULL SCREEN BACKGROUND (BLURRED GLOW)
+========================================= */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+
+  background:
+    radial-gradient(circle at 15% 20%, rgba(26, 42, 156, 0.55), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(12, 90, 168, 0.45), transparent 45%),
+    radial-gradient(circle at 80% 85%, rgba(10, 138, 143, 0.40), transparent 50%),
+    radial-gradient(circle at 20% 90%, rgba(20, 240, 176, 0.18), transparent 45%),
+    linear-gradient(160deg, #060a22 0%, #0a1030 50%, #04141a 100%);
+}
+
+/* =========================================
+   4. BODY
+========================================= */
+
+body {
+  position: relative;
+  min-height: 100vh;
+  background: transparent;
+  overflow-x: hidden;
+  font-family: "Cairo", sans-serif;
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+/* =========================================
+   5. IMAGES
+========================================= */
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* =========================================
+   6. FORM ELEMENTS
+========================================= */
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* =========================================
+   7. ARABIC TEXT DIRECTION
+========================================= */
+
+.title,
+.subtitle,
+.label,
+.card-title,
+.result-label,
+.amount-text,
+.field label,
+.section-title,
+.brand-name,
+.brand-subtitle,
+.result-title,
+.stat-label,
+.break-even-label,
+.footer-copy,
+.social-link {
+  unicode-bidi: plaintext;
+}
+
+/* =========================================
+   8. MAIN PAGE CONTAINER
+========================================= */
+
+.page-shell {
+  position: relative;
+  z-index: 0;
+
+  width: 100%;
+  max-width: 1180px;
+
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  margin-inline: auto;
+
+  padding: 30px 18px 28px;
+
+  background: transparent;
+}
+
+/* =========================================
+   9. HEADER
+========================================= */
+
+.topbar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 26px;
+}
+
+/* =========================================
+   10. BRAND
+========================================= */
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-wrap: wrap;
+  gap: 16px;
+
+  text-align: center;
+}
+
+.brand-logo {
+  width: 54px;
+  height: 54px;
+
+  border-radius: 16px;
+
+  object-fit: cover;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 2px;
+}
+
+.brand-name {
+  margin: 0;
+
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+
+  color: var(--text-main);
+}
+
+.brand-subtitle {
+  margin: 0;
+
+  font-size: 0.95rem;
+  color: var(--text-muted);
+
+  font-weight: 600;
+}
