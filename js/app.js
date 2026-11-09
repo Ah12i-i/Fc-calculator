@@ -20,8 +20,7 @@
     lossPerPlayer: document.getElementById("loss-per-player"),
     profitPercent: document.getElementById("profit-percent"),
     lossPercent: document.getElementById("loss-percent"),
-    breakEvenProfit: document.getElementById("break-even-profit"),
-    breakEvenLoss: document.getElementById("break-even-loss")
+    breakEvenProfit: document.getElementById("break-even-profit")
   };
 
   let renderFrameId = null;
@@ -110,7 +109,6 @@
     elements.profitPercent.textContent = "+0.00%";
     elements.lossPercent.textContent = "+0.00%";
     animateNumber(elements.breakEvenProfit, 0, 0);
-    animateNumber(elements.breakEvenLoss, 0, 0);
 
     elements.profitCard.classList.add("neutral-card");
     elements.lossCard.classList.add("neutral-card");
@@ -172,7 +170,6 @@
     animateNumber(elements.profitPerPlayer, Math.max(stats.profitPerPlayer, 0), 0);
     animateNumber(elements.lossPerPlayer, Math.max(stats.lossPerPlayer, 0), 0);
     animateNumber(elements.breakEvenProfit, Math.max(stats.breakEven, 0), 0);
-    animateNumber(elements.breakEvenLoss, Math.max(stats.breakEven, 0), 0);
 
     elements.profitPercent.textContent = fc.formatSignedPercent(Math.max(stats.percentage, 0));
     elements.lossPercent.textContent = fc.formatSignedPercent(Math.min(stats.percentage, 0));
