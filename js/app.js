@@ -7,8 +7,10 @@
     buyPrice: document.getElementById("buy-price"),
     sellPrice: document.getElementById("sell-price"),
     playersCount: document.getElementById("players-count"),
+    capitalTotal: document.getElementById("capital-total"),
     chips: Array.from(document.querySelectorAll(".chip")),
     stepButtons: Array.from(document.querySelectorAll(".player-stepper")),
+    priceStepButtons: Array.from(document.querySelectorAll("[data-price-target]")),
     resetButton: document.getElementById("reset-btn"),
     profitCard: document.getElementById("profit-card"),
     lossCard: document.getElementById("loss-card"),
@@ -68,6 +70,38 @@
     render();
   }
 
+  function getMarketPriceStep(price, direction) {
+    if (direction > 0) {
+      if (price < 1000) {
+        return Math.min(1000, (Math.floor(price / 50) + 1) * 50);
+      }
+      if (price < 10000) {
+        return 1000 + (Math.floor((price - 1000) / 100) + 1) * 100;
+      }
+      if (price < 50000) {
+        return 10000 + (Math.floor((price - 10000) / 250) + 1) * 250;
+      }
+      if (price < 100000) {
+        return 50000 + (Math.floor((price - 50000) / 500) + 1) * 500;
+      }
+      return 100000 + (Math.floor((price - 100000) / 1000) + 1) * 1000;
+    }
+
+    if (price <= 1000) {
+      return Math.max(0, (Math.ceil(price / 50) - 1) * 50);
+    }
+    if (price <= 10000) {
+      return 1000 + (Math.ceil((price - 1000) / 100) - 1) * 100;
+    }
+    if (price <= 50000) {
+      return 10000 + (Math.ceil((price - 10000) / 250) - 1) * 250;
+    }
+    if (price <= 100000) {
+      return 50000 + (Math.ceil((price - 50000) / 500) - 1) * 500;
+    }
+    return 100000 + (Math.ceil((price - 100000) / 1000) - 1) * 1000;
+  }
+
   function setNeutralState() {
     animateNumber(elements.profitTotal, 0, 0);
     animateNumber(elements.lossTotal, 0, 0);
@@ -115,6 +149,8 @@
     const buyPrice = fc.parseNumericInput(elements.buyPrice.value);
     const sellPrice = fc.parseNumericInput(elements.sellPrice.value);
     const playersCount = Math.max(1, fc.parseNumericInput(elements.playersCount.value) || 1);
+
+    elements.capitalTotal.textContent = fc.formatNumber(String(buyPrice * playersCount));
 
     const hasAnyValue = buyPrice > 0 || sellPrice > 0;
     if (!hasAnyValue) {
@@ -198,6 +234,17 @@
       const currentValue = Number(fc.digitsOnly(elements.playersCount.value)) || 1;
       const step = Number(button.dataset.step) || 0;
       setPlayersValue(currentValue + step);
+    });
+  });
+
+  elements.priceStepButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      const input = document.getElementById(button.dataset.priceTarget);
+      const currentPrice = fc.parseNumericInput(input.value);
+      const direction = Number(button.dataset.priceDirection);
+      const nextPrice = getMarketPriceStep(currentPrice, direction);
+      input.value = fc.formatNumber(String(nextPrice));
+      render();
     });
   });
 

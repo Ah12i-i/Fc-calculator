@@ -35,26 +35,43 @@
 
           <div class="field">
             <label for="buy-price">سعر الشراء (للاعب الواحد)</label>
-            <div class="input-wrap">
-              <input id="buy-price" type="text" inputmode="numeric" placeholder="0" aria-label="سعر الشراء" />
+            <div class="player-control price-control">
+              <button type="button" class="player-stepper" data-price-target="buy-price" data-price-direction="-1" aria-label="إنقاص سعر الشراء">−</button>
+              <div class="input-wrap">
+                <input id="buy-price" type="text" inputmode="numeric" placeholder="0" aria-label="سعر الشراء" />
+              </div>
+              <button type="button" class="player-stepper" data-price-target="buy-price" data-price-direction="1" aria-label="زيادة سعر الشراء">+</button>
             </div>
           </div>
 
           <div class="field">
             <label for="sell-price">سعر البيع (للاعب الواحد)</label>
-            <div class="input-wrap">
-              <input id="sell-price" type="text" inputmode="numeric" placeholder="0" aria-label="سعر البيع" />
+            <div class="player-control price-control">
+              <button type="button" class="player-stepper" data-price-target="sell-price" data-price-direction="-1" aria-label="إنقاص سعر البيع">−</button>
+              <div class="input-wrap">
+                <input id="sell-price" type="text" inputmode="numeric" placeholder="0" aria-label="سعر البيع" />
+              </div>
+              <button type="button" class="player-stepper" data-price-target="sell-price" data-price-direction="1" aria-label="زيادة سعر البيع">+</button>
             </div>
           </div>
 
           <div class="field">
             <label for="players-count">عدد اللاعبين من نفس النسخة</label>
-            <div class="player-control">
-              <button type="button" class="player-stepper" data-step="-1" aria-label="إنقاص">−</button>
-              <div class="input-wrap player-input">
-                <input id="players-count" type="text" inputmode="numeric" value="1" aria-label="عدد اللاعبين" />
+            <div class="players-capital-row">
+              <div class="player-control">
+                <button type="button" class="player-stepper" data-step="-1" aria-label="إنقاص">−</button>
+                <div class="input-wrap player-input">
+                  <input id="players-count" type="text" inputmode="numeric" value="1" aria-label="عدد اللاعبين" />
+                </div>
+                <button type="button" class="player-stepper" data-step="1" aria-label="زيادة">+</button>
               </div>
-              <button type="button" class="player-stepper" data-step="1" aria-label="زيادة">+</button>
+              <div class="capital-box" aria-live="polite">
+                <span class="capital-label">إجمالي رأس المال المطلوب</span>
+                <span class="capital-value">
+                  <img class="coin-icon small" src="assets/images/fc-coins-small.png" alt="" width="16" height="16" />
+                  <span id="capital-total">0</span>
+                </span>
+              </div>
             </div>
             <div class="chip-row" aria-label="اختيارات سريعة">
               <button type="button" class="chip is-active" data-players="1">1</button>
