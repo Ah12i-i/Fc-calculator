@@ -208,6 +208,9 @@
 
   async function loadVisitorCount() {
     if (!fc.VISITOR_API_URL) {
+      if (elements.visitorCount.dataset.hasCachedValue !== "true") {
+        elements.visitorCount.textContent = "غير مفعّل";
+      }
       return;
     }
 
@@ -223,8 +226,16 @@
       }
 
       elements.visitorCount.textContent = result.total.toLocaleString("en-US");
+      elements.visitorCount.dataset.hasCachedValue = "true";
+      try {
+        localStorage.setItem(elements.visitorCount.dataset.cacheKey, String(result.total));
+      } catch (error) {
+        console.warn("تعذر حفظ العدد الأخير للزوار:", error);
+      }
     } catch (error) {
-      elements.visitorCount.textContent = "غير متاح";
+      if (elements.visitorCount.dataset.hasCachedValue !== "true") {
+        elements.visitorCount.textContent = "غير متاح";
+      }
       console.error("تعذر تحميل عداد الزوار:", error);
     }
   }

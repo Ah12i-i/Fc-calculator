@@ -168,8 +168,22 @@
 
       <aside class="visitor-counter" aria-label="إجمالي زوار الموقع">
         <span class="visitor-counter-label">عدد الزوار</span>
-        <strong id="visitor-count" aria-live="polite">غير مفعّل</strong>
+        <strong id="visitor-count" data-cache-key="fc-visitor-count" aria-live="polite">جارٍ التحميل</strong>
       </aside>
+      <script>
+        (function () {
+          const counter = document.getElementById("visitor-count");
+          try {
+            const cachedCount = localStorage.getItem(counter.dataset.cacheKey);
+            if (cachedCount && /^\d+$/.test(cachedCount) && Number.isSafeInteger(Number(cachedCount))) {
+              counter.textContent = Number(cachedCount).toLocaleString("en-US");
+              counter.dataset.hasCachedValue = "true";
+            }
+          } catch (error) {
+            console.warn("تعذر قراءة العدد المحفوظ للزوار:", error);
+          }
+        })();
+      </script>
     </div>
   </body>
 </html>
