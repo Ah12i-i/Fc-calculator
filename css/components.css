@@ -453,7 +453,7 @@
   align-items: center;
   gap: 8px;
   width: min(100%, 390px);
-  margin-top: 136px;
+  margin: 136px auto 0;
   direction: ltr;
 }
 
