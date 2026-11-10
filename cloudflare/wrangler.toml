@@ -3,7 +3,7 @@ main = "worker.js"
 compatibility_date = "2025-01-01"
 
 [vars]
-ALLOWED_ORIGIN = "https://ah12i-i.github.io"
+ALLOWED_ORIGIN = "https://ahmed-atya1.github.io"
 
 [[d1_databases]]
 binding = "DB"

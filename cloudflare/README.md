@@ -44,6 +44,7 @@ Run these commands from the repository root:
    Commit and push that change to publish the counter on GitHub Pages.
 
 `ALLOWED_ORIGIN` in `cloudflare/wrangler.toml` must match the exact origin of
-the Pages site (no path or trailing slash). Change it if the site uses a
-custom domain, then deploy the Worker again. Do not change the HMAC key after
-the counter is in use, or existing IPs will be counted again.
+the Pages site (no path or trailing slash). Update it whenever the Pages
+account name or custom domain changes, then deploy the Worker again. Do not
+change the HMAC key after the counter is in use, or existing IPs will be
+counted again.
