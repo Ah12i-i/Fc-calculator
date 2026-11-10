@@ -4,6 +4,16 @@
   .calculator-wrap {
     grid-template-columns: 1fr;
   }
+
+  .results-column {
+    grid-column: 1;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .utility-row {
+    margin-top: 24px;
+  }
 }
 
 @media (max-width: 560px) {
@@ -47,14 +57,17 @@
   }
 
   .visitor-counter {
-    left: 10px;
-    bottom: 10px;
     gap: 8px;
-    padding: 12px 16px;
+    padding: 10px;
     font-size: 0.9rem;
   }
 
   .visitor-counter strong {
-    font-size: 1.1rem;
+    font-size: 1rem;
+  }
+
+  .utility-row {
+    gap: 10px;
+    width: 100%;
   }
 }
