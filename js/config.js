@@ -23,4 +23,6 @@
     buyPrice: "",
     sellPrice: ""
   };
+
+  global.FC.VISITOR_API_URL = "https://fc-calculator-visitors.fc-calculator.workers.dev/api/visitors";
 })(window);

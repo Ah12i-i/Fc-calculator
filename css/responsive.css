@@ -45,4 +45,10 @@
   .chip-row {
     justify-content: center;
   }
+
+  .visitor-counter {
+    left: 10px;
+    bottom: 10px;
+    font-size: 0.75rem;
+  }
 }

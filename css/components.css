@@ -419,6 +419,34 @@
   fill: currentColor;
 }
 
+.visitor-counter {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  background: rgba(8, 20, 38, 0.82);
+  box-shadow: var(--shadow-soft);
+  color: var(--text-main);
+  font-size: 0.8rem;
+  backdrop-filter: blur(12px);
+}
+
+.visitor-counter-label {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.visitor-counter strong {
+  direction: ltr;
+  font-variant-numeric: tabular-nums;
+}
+
 .neutral-card {
   opacity: 0.38;
 }

@@ -1,0 +1,11 @@
+name = "fc-calculator-visitors"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://ah12i-i.github.io"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "fc-calculator-visitors"
+database_id = "d1c0e2f2-fcea-49e5-8d8c-a4662dcbc6a3"

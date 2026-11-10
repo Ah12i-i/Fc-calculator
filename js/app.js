@@ -20,7 +20,8 @@
     lossPerPlayer: document.getElementById("loss-per-player"),
     profitPercent: document.getElementById("profit-percent"),
     lossPercent: document.getElementById("loss-percent"),
-    breakEvenProfit: document.getElementById("break-even-profit")
+    breakEvenProfit: document.getElementById("break-even-profit"),
+    visitorCount: document.getElementById("visitor-count")
   };
 
   let renderFrameId = null;
@@ -205,6 +206,29 @@
     render();
   }
 
+  async function loadVisitorCount() {
+    if (!fc.VISITOR_API_URL) {
+      return;
+    }
+
+    try {
+      const response = await fetch(fc.VISITOR_API_URL, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("Visitor counter returned HTTP " + response.status);
+      }
+
+      const result = await response.json();
+      if (!Number.isSafeInteger(result.total) || result.total < 0) {
+        throw new Error("Visitor counter returned an invalid total");
+      }
+
+      elements.visitorCount.textContent = result.total.toLocaleString("en-US");
+    } catch (error) {
+      elements.visitorCount.textContent = "غير متاح";
+      console.error("تعذر تحميل عداد الزوار:", error);
+    }
+  }
+
   elements.buyPrice.addEventListener("input", function () {
     applyNumericInputFormatting(this);
     scheduleRender();
@@ -256,4 +280,5 @@
   elements.playersCount.value = String(fc.DEFAULTS.playersCount);
   syncChipState(fc.DEFAULTS.playersCount);
   render();
+  loadVisitorCount();
 })(window);
