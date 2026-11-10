@@ -426,14 +426,14 @@
   z-index: 5;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 12px;
+  padding: 14px 20px;
   border: 1px solid var(--glass-border);
   border-radius: 999px;
   background: rgba(8, 20, 38, 0.82);
   box-shadow: var(--shadow-soft);
   color: var(--text-main);
-  font-size: 0.8rem;
+  font-size: 1rem;
   backdrop-filter: blur(12px);
 }
 
@@ -444,6 +444,7 @@
 
 .visitor-counter strong {
   direction: ltr;
+  font-size: 1.25rem;
   font-variant-numeric: tabular-nums;
 }
 
