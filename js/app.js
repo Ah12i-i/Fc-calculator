@@ -18,6 +18,8 @@
     lossTotal: document.getElementById("loss-total"),
     profitPerPlayer: document.getElementById("profit-per-player"),
     lossPerPlayer: document.getElementById("loss-per-player"),
+    profitCoinsTotal: document.getElementById("profit-coins-total"),
+    lossCoinsTotal: document.getElementById("loss-coins-total"),
     profitPercent: document.getElementById("profit-percent"),
     lossPercent: document.getElementById("loss-percent"),
     breakEvenProfit: document.getElementById("break-even-profit"),
@@ -107,6 +109,8 @@
     animateNumber(elements.lossTotal, 0, 0);
     animateNumber(elements.profitPerPlayer, 0, 0);
     animateNumber(elements.lossPerPlayer, 0, 0);
+    animateNumber(elements.profitCoinsTotal, 0, 0);
+    animateNumber(elements.lossCoinsTotal, 0, 0);
     elements.profitPercent.textContent = "+0.00%";
     elements.lossPercent.textContent = "+0.00%";
     animateNumber(elements.breakEvenProfit, 0, 0);
@@ -170,6 +174,8 @@
     animateNumber(elements.lossTotal, Math.max(stats.totalLoss, 0), 0);
     animateNumber(elements.profitPerPlayer, Math.max(stats.profitPerPlayer, 0), 0);
     animateNumber(elements.lossPerPlayer, Math.max(stats.lossPerPlayer, 0), 0);
+    animateNumber(elements.profitCoinsTotal, stats.totalCoins, 0);
+    animateNumber(elements.lossCoinsTotal, stats.totalCoins, 0);
     animateNumber(elements.breakEvenProfit, Math.max(stats.breakEven, 0), 0);
 
     elements.profitPercent.textContent = fc.formatSignedPercent(Math.max(stats.percentage, 0));

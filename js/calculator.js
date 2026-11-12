@@ -67,6 +67,7 @@
     const lossPerPlayer = Math.max(-profitPerPlayer, 0);
     const totalProfit = Math.max(profitPerPlayer, 0) * playersCount;
     const totalLoss = lossPerPlayer * playersCount;
+    const totalCoins = netSell * playersCount;
     const percentage = buyPrice > 0 ? (profitPerPlayer / buyPrice) * 100 : 0;
     const breakEven = buyPrice > 0 ? buyPrice / global.FC.NET_RATE : 0;
 
@@ -77,6 +78,7 @@
       lossPerPlayer,
       totalProfit,
       totalLoss,
+      totalCoins,
       percentage,
       breakEven,
       playersCount
