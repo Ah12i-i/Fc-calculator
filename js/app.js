@@ -174,8 +174,8 @@
     animateNumber(elements.lossTotal, Math.max(stats.totalLoss, 0), 0);
     animateNumber(elements.profitPerPlayer, Math.max(stats.profitPerPlayer, 0), 0);
     animateNumber(elements.lossPerPlayer, Math.max(stats.lossPerPlayer, 0), 0);
-    animateNumber(elements.profitCoinsTotal, stats.totalCoins, 0);
-    animateNumber(elements.lossCoinsTotal, stats.totalCoins, 0);
+    animateNumber(elements.profitCoinsTotal, positive ? stats.totalCoins : 0, 0);
+    animateNumber(elements.lossCoinsTotal, negative ? stats.totalCoins : 0, 0);
     animateNumber(elements.breakEvenProfit, Math.max(stats.breakEven, 0), 0);
 
     elements.profitPercent.textContent = fc.formatSignedPercent(Math.max(stats.percentage, 0));
