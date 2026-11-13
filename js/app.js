@@ -23,10 +23,14 @@
     profitPercent: document.getElementById("profit-percent"),
     lossPercent: document.getElementById("loss-percent"),
     breakEvenProfit: document.getElementById("break-even-profit"),
-    visitorCount: document.getElementById("visitor-count")
+    visitorCount: document.getElementById("visitor-count"),
+    onlineCounter: document.getElementById("online-counter"),
+    onlineCount: document.getElementById("online-count")
   };
 
   let renderFrameId = null;
+  let presenceSessionId = null;
+  let presenceRequestPending = false;
 
   function animateNumber(element, endValue, decimals) {
     if (element._rafId) {
@@ -246,6 +250,93 @@
     }
   }
 
+  function getPresenceSessionId() {
+    if (presenceSessionId) {
+      return presenceSessionId;
+    }
+
+    try {
+      const savedSessionId = localStorage.getItem("fc-presence-session");
+      if (savedSessionId && /^[a-f0-9]{32}$/.test(savedSessionId)) {
+        presenceSessionId = savedSessionId;
+        return presenceSessionId;
+      }
+    } catch (error) {
+      console.warn("تعذر قراءة معرّف جلسة الاتصال:", error);
+    }
+
+    const bytes = global.crypto.getRandomValues(new Uint8Array(16));
+    presenceSessionId = Array.from(bytes, function (byte) {
+      return byte.toString(16).padStart(2, "0");
+    }).join("");
+
+    try {
+      localStorage.setItem("fc-presence-session", presenceSessionId);
+    } catch (error) {
+      console.warn("تعذر حفظ معرّف جلسة الاتصال:", error);
+    }
+
+    return presenceSessionId;
+  }
+
+  async function sendPresenceHeartbeat() {
+    if (presenceRequestPending || !fc.PRESENCE_API_URL) {
+      return;
+    }
+
+    presenceRequestPending = true;
+    try {
+      const response = await fetch(fc.PRESENCE_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: getPresenceSessionId() }),
+        cache: "no-store"
+      });
+      if (!response.ok) {
+        throw new Error("Presence counter returned HTTP " + response.status);
+      }
+
+      const result = await response.json();
+      if (!Number.isSafeInteger(result.total) || result.total < 0) {
+        throw new Error("Presence counter returned an invalid total");
+      }
+
+      elements.onlineCount.textContent = result.total.toLocaleString("en-US");
+      elements.onlineCounter.classList.add("is-connected");
+      elements.onlineCounter.classList.remove("is-unavailable");
+    } catch (error) {
+      const wasUnavailable = elements.onlineCounter.classList.contains("is-unavailable");
+      elements.onlineCount.textContent = "غير متاح";
+      elements.onlineCounter.classList.remove("is-connected");
+      elements.onlineCounter.classList.add("is-unavailable");
+      if (!wasUnavailable) {
+        console.error("تعذر تحديث عدد المتصلين:", error);
+      }
+    } finally {
+      presenceRequestPending = false;
+    }
+  }
+
+  function startPresenceCounter() {
+    if (!fc.PRESENCE_API_URL) {
+      elements.onlineCount.textContent = "غير مفعّل";
+      elements.onlineCounter.classList.add("is-unavailable");
+      return;
+    }
+
+    async function heartbeatLoop() {
+      await sendPresenceHeartbeat();
+      global.setTimeout(heartbeatLoop, 5000);
+    }
+
+    heartbeatLoop();
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) {
+        sendPresenceHeartbeat();
+      }
+    });
+  }
+
   elements.buyPrice.addEventListener("input", function () {
     applyNumericInputFormatting(this);
     scheduleRender();
@@ -298,4 +389,5 @@
   syncChipState(fc.DEFAULTS.playersCount);
   render();
   loadVisitorCount();
+  startPresenceCounter();
 })(window);

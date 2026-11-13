@@ -25,4 +25,5 @@
   };
 
   global.FC.VISITOR_API_URL = "https://fc-calculator-visitors.fc-calculator.workers.dev/api/visitors";
+  global.FC.PRESENCE_API_URL = "https://fc-calculator-visitors.fc-calculator.workers.dev/api/presence";
 })(window);

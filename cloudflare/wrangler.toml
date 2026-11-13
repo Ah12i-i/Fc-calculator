@@ -9,3 +9,11 @@ ALLOWED_ORIGIN = "https://ahmed-atya1.github.io"
 binding = "DB"
 database_name = "fc-calculator-visitors"
 database_id = "d1c0e2f2-fcea-49e5-8d8c-a4662dcbc6a3"
+
+[[durable_objects.bindings]]
+name = "PRESENCE_COUNTER"
+class_name = "PresenceCounter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PresenceCounter"]

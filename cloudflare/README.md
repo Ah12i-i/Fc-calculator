@@ -1,8 +1,9 @@
-# Visitor counter setup
+# Visitor and online counter setup
 
-The GitHub Pages site needs a small Cloudflare Worker and D1 database to count
-each IP address once across all visitors. The database stores a keyed
-SHA-256 hash of each IP, not the IP address itself.
+The GitHub Pages site uses a Cloudflare Worker and D1 database to count each IP
+address once across all visitors. The database stores a keyed SHA-256 hash of
+each IP, not the IP address itself. The Worker also uses a Durable Object to
+show an approximate number of currently connected browser sessions.
 
 Run these commands from the repository root:
 
@@ -28,7 +29,8 @@ Run these commands from the repository root:
    npx wrangler secret put IP_HASH_SECRET --config cloudflare/wrangler.toml
    ```
 
-4. Deploy the Worker:
+4. Deploy the Worker. Wrangler will create and migrate the Durable Object
+   namespace from the configuration in `cloudflare/wrangler.toml`:
 
    ```sh
    npx wrangler deploy --config cloudflare/wrangler.toml
@@ -42,6 +44,13 @@ Run these commands from the repository root:
    ```
 
    Commit and push that change to publish the counter on GitHub Pages.
+
+The online counter sends an anonymous random session ID to the Worker every
+five seconds. Sessions with no heartbeat for 20 seconds are removed. A session
+ID is stored in the browser's local storage so multiple tabs in the same
+browser count as one session; no IP address is stored for the online counter.
+The displayed number is approximate because browsers may pause background tabs
+or delay network requests.
 
 `ALLOWED_ORIGIN` in `cloudflare/wrangler.toml` must match the exact origin of
 the Pages site (no path or trailing slash). Update it whenever the Pages

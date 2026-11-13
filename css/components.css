@@ -447,6 +447,29 @@
   font-variant-numeric: tabular-nums;
 }
 
+.online-counter {
+  grid-column: 1 / -1;
+}
+
+.online-indicator {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+  background: #7b8498;
+  box-shadow: 0 0 0 3px rgba(123, 132, 152, 0.16);
+}
+
+.online-counter.is-connected .online-indicator {
+  background: #39e58c;
+  box-shadow: 0 0 8px rgba(57, 229, 140, 0.8), 0 0 0 3px rgba(57, 229, 140, 0.16);
+}
+
+.online-counter.is-unavailable .online-indicator {
+  background: #e46b72;
+  box-shadow: 0 0 0 3px rgba(228, 107, 114, 0.16);
+}
+
 .utility-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
